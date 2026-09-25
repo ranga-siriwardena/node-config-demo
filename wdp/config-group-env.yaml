@@ -1,0 +1,15 @@
+# Plain values the app reads as environment variables.
+# Create with:  wdp create config-group --file=config-group-env.yaml
+name: node-demo-env
+description: "node-config-demo env vars"
+configurations:
+  - key: TEST_CONFIG_STR
+    isSensitive: false
+    isFile: false
+    values:
+      Development: "hello-from-config-group"
+  - key: CERT_FILE_PATH
+    isSensitive: false
+    isFile: false
+    values:
+      Development: "/etc/certs/test-cert.pem"

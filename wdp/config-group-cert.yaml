@@ -1,0 +1,11 @@
+# Cert shared as a file. With isFile: true the value is a PATH to a local file
+# (resolved relative to where you run wdp), not the file content.
+# Create with (from this folder):  wdp create config-group --file=config-group-cert.yaml
+name: node-demo-cert
+description: "node-config-demo certificate"
+configurations:
+  - key: test-cert.pem
+    isSensitive: true
+    isFile: true
+    values:
+      Development: "test-cert.pem"

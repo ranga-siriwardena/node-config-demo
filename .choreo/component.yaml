@@ -1,0 +1,9 @@
+schemaVersion: 1.1
+endpoints:
+  - name: albums-api
+    service:
+      basePath: /
+      port: 8080
+    type: REST
+    networkVisibilities:
+      - Public

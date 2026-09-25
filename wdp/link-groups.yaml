@@ -1,0 +1,17 @@
+# Maps both config groups onto the component.
+#   wdp set component-config -f link-groups.yaml --dry-run
+#   wdp set component-config -f link-groups.yaml
+schemaVersion: 1
+
+component: node-config-demo
+project: Ranga-US
+environment: Development
+
+configs:
+  configGroups:
+    # Every key -> env var of the same name (TEST_CONFIG_STR, CERT_FILE_PATH)
+    - name: node-demo-env
+
+    # Every key -> file in this dir, so /etc/certs/test-cert.pem
+    - name: node-demo-cert
+      mountPath: /etc/certs
