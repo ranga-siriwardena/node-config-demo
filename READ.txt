@@ -1,0 +1,59 @@
+
+1. Push node-config-demo to GitHub. Choreo builds from a repo, and this folder isn't one yet.
+
+git init && git add . && git commit -m "node-config-demo"
+gh repo create node-config-demo --public --source=. --push
+
+
+2. Create config 
+
+wdp create config -p Ranga-US -c book-list-project -e Development -d main \
+  --type=config-map --mount-type=env-variables --name=ranga-test-cm --env-vars=key1=val1
+
+3. Create the component and build it
+
+wdp create component node-config-demo -p Ranga-US --type=service --build-pack=nodejs \
+  --repo=https://github.com/ranga-siriwardena/node-config-demo --repo-branch=main
+wdp create build node-config-demo -p Ranga-US
+
+
+1) Test the project locally 
+
+TEST_CONFIG_STR=hello-from-config-group CERT_FILE_PATH=$PWD/wdp/test-cert.pem npm start
+curl localhost:8080/albums        # in a second terminal
+
+
+2. Push to GitHub
+git init && git add . && git commit -m "node-config-demo"
+gh repo create node-config-demo --public --source=. --push
+
+
+3. Create the component and build it
+wdp create component node-config-demo -p Ranga-US --type=service --build-pack=nodejs \
+  --repo=https://github.com/ranga-siriwardena/node-config-demo --repo-branch=main
+
+wdp create build node-config-demo -p Ranga-US
+
+4. Create the config groups and link them. Run these from the wdp/ folder:
+
+cd wdp
+
+wdp create config-group --file=config-group-env.yaml
+wdp create config-group --file=config-group-cert.yaml
+wdp set component-config -f link-groups.yaml --dry-run
+wdp set component-config -f link-groups.yaml
+
+
+5. Deploy. Do this only after step 4; the app exits on startup without its config.
+
+wdp create deployment node-config-demo -p Ranga-US --deployment-track=main --env=Development
+
+
+6. Verify
+
+wdp list components --config-group node-demo-env
+wdp list config-groups -p Ranga-US -c node-config-demo
+ 
+
+7. Test 
+  Call GET /albums from the Choreo test console and check the logs for hello-from-config-group and the cert.
