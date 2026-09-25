@@ -182,3 +182,15 @@ Note: Re-deploy any components that use this configuration group for the changes
 That note is the CLI itself confirming the "next deployment" caveat below — and it's your reverse lookup from step 6, just with `--config-group="name"` syntax instead of `--config-group name`.
 
 Either way, a config-group change only takes effect on the component's **next deployment** — same caveat as step 5.
+
+## 9. Bulk-update multiple components
+
+There's no bulk-update flag anywhere in this CLI — updating several components means looping the same single-component command:
+
+```bash
+for c in svc-a svc-b svc-c; do
+  wdp set component-config -f config.yaml --component="$c" --env=Development
+done
+```
+
+`bulk-update-components.sh` is a ready-to-run version of this: `node-config-demo` is the only component hardcoded in it today, with two lines commented out showing where to add more later.
