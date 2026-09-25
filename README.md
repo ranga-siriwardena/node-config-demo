@@ -185,7 +185,7 @@ Either way, a config-group change only takes effect on the component's **next de
 
 ## 9. Bulk-update multiple components
 
-There's no bulk-update flag anywhere in this CLI — updating several components means looping the same single-component command:
+There's no bulk-update flag in this CLI — updating several components means looping the same single-component command:
 
 ```bash
 for c in svc-a svc-b svc-c; do
