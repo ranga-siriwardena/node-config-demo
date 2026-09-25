@@ -13,3 +13,8 @@ configurations:
     isFile: false
     values:
       Development: "/etc/certs/test-cert.pem"
+  - key: EXTRA_FLAG                                 # <- new key
+    isSensitive: false
+    isFile: false
+    values:
+      Development: "true"

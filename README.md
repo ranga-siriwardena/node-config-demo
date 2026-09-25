@@ -135,7 +135,7 @@ Call `GET /albums` from the Choreo test console and check the logs for `hello-fr
 
 ## 8. Update a config group
 
-"Update" covers two different operations — only one of them has a documented, upsert-safe command.
+"Update" covers two different operations, each with its own command.
 
 **A. Change which config groups a component is linked to (or how they're mounted)**
 
@@ -148,34 +148,37 @@ wdp set component-config -f link-groups.yaml              # apply
 
 **B. Change a value *inside* an existing config group** (e.g. bump `TEST_CONFIG_STR`, or add a new key)
 
-There's no distinct "update config-group" verb documented — only `create config-group` for the initial creation. The likely path, following the edit-file-then-reapply pattern used elsewhere in this CLI, is to edit the group's file and re-run the same create command. For example, to change the value and add a new key to `node-demo-env`:
+`create config-group` is create-only — running it again against an existing name fails:
 
-```yaml
-# config-group-env.yaml
-name: node-demo-env
-description: "node-config-demo env vars"
-configurations:
-  - key: TEST_CONFIG_STR
-    isSensitive: false
-    isFile: false
-    values:
-      Development: "hello-from-config-group-v2"   # <- changed
-  - key: CERT_FILE_PATH
-    isSensitive: false
-    isFile: false
-    values:
-      Development: "/etc/certs/test-cert.pem"
-  - key: EXTRA_FLAG                                 # <- new key
-    isSensitive: false
-    isFile: false
-    values:
-      Development: "true"
 ```
+Error: a configuration group named "node-demo-env" already exists in this organization — choose a different name
+```
+
+The real update verb is `wdp update config-group`. Edit the group's file, then:
 
 ```bash
-wdp create config-group --file=config-group-env.yaml
+wdp update config-group --file=config-group-env.yaml
 ```
 
-Before relying on this, confirm `create config-group` is actually idempotent on an existing group name (check `wdp create config-group --help`, or test against a throwaway group first) — that guarantee is only explicitly stated in the doc for `set component-config`, not for `create config-group`.
+Confirmed output on a successful update:
+
+```
+Configuration group successfully updated!
+     Name:              node-demo-env
+     Display Name:      node-demo-env
+     UUID:              01f1b886-9465-16f0-ac4a-fff175c56167
+     Description:       node-config-demo env vars
+     Type:              user
+
+     KEY                  SENSITIVE      FILE      DEVELOPMENT
+     EXTRA_FLAG           No             No        true
+     TEST_CONFIG_STR      No             No        hello-from-config-group
+     CERT_FILE_PATH       No             No        /etc/certs/test-cert.pem
+
+Note: Re-deploy any components that use this configuration group for the changes to take effect. To find them, run:
+  wdp list components --config-group="node-demo-env"
+```
+
+That note is the CLI itself confirming the "next deployment" caveat below — and it's your reverse lookup from step 6, just with `--config-group="name"` syntax instead of `--config-group name`.
 
 Either way, a config-group change only takes effect on the component's **next deployment** — same caveat as step 5.
